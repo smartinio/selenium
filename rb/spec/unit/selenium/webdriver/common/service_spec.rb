@@ -34,6 +34,7 @@ module Selenium
         before { allow(Platform).to receive(:find_binary).and_return(service_path) }
 
         let(:args) { %w[--foo --bar] }
+        let(:env) { {FOO: 'bar'} }
 
         it 'creates Chrome instance' do
           service = described_class.chrome(args: args)
@@ -63,6 +64,14 @@ module Selenium
           service = described_class.safari(args: args)
           expect(service).to be_a(Safari::Service)
           expect(service.args).to eq args
+        end
+
+        it 'optionally accepts environment variables' do
+          %i[chrome edge firefox internet_explorer safari].each do |browser|
+            service = described_class.send(browser, env: env, args: args)
+            expect(service.env).to eq env
+            expect(service.args).to eq args
+          end
         end
       end
     end

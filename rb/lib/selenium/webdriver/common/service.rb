@@ -57,7 +57,7 @@ module Selenium
         end
       end
 
-      attr_accessor :host, :executable_path, :port, :log, :args
+      attr_accessor :host, :executable_path, :port, :log, :args, :env
       alias extra_args args
 
       #
@@ -66,7 +66,7 @@ module Selenium
       # @api private
       #
 
-      def initialize(path: nil, port: nil, log: nil, args: nil)
+      def initialize(path: nil, port: nil, log: nil, args: nil, env: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
 
@@ -83,6 +83,7 @@ module Selenium
                end
 
         @args = args.is_a?(Hash) ? extract_service_args(args) : args
+        @env = env.is_a?(Hash) ? env.transform_keys(&:to_s) : env
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end

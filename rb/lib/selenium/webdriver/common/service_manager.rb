@@ -41,6 +41,7 @@ module Selenium
         @host = Platform.localhost
         @port = config.port
         @extra_args = config.args
+        @env = config.env
         @io = config.log
         @shutdown_supported = config.shutdown_supported
 
@@ -100,7 +101,8 @@ module Selenium
       end
 
       def start_process
-        @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
+        command = [@env, @executable_path, "--port=#{@port}", *@extra_args].compact
+        @process = build_process(*command)
         @process.start
       end
 
